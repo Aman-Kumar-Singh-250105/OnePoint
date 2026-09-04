@@ -1,0 +1,6 @@
+# Copy to application-local.properties in this folder and set your MySQL root password.
+# This file is gitignored and loaded automatically when you run from the backend directory.
+server.port=8081
+
+spring.datasource.username=root
+spring.datasource.password=YOUR_MYSQL_ROOT_PASSWORD

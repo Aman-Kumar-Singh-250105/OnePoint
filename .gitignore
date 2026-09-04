@@ -1,0 +1,23 @@
+# Build outputs & dependencies
+node_modules/
+dist/
+target/
+.angular/
+tmp/
+out-tsc/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.suo
+*.user
+
+# Local configuration & environment
+backend/application-local.properties
+.env
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
