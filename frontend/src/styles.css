@@ -60,6 +60,10 @@ body {
   box-shadow: var(--shadow-md);
 }
 
+.forms-card {
+  overflow-x: scroll;
+}
+
 /* Typography & Badges */
 h1, h2, h3, h4 {
   font-weight: 700;

@@ -26,7 +26,7 @@ import { DistributionType, Form, FormSection, FormStatus, Question, QuestionType
             Save as Draft
           </button>
           <button (click)="saveForm('PUBLISHED')" [disabled]="saving" class="btn btn-primary">
-            🚀 Publish Live
+            Publish Live
           </button>
         </div>
       </div>

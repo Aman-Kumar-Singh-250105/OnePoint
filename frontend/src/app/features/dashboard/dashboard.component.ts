@@ -21,7 +21,7 @@ import { QrModalComponent } from '../../shared/qr-modal/qr-modal.component';
         </div>
         <div class="header-actions">
           <button (click)="openRuleModal = true" class="btn btn-accent">
-            <span>✨ AI Rule Engine Generator</span>
+            <span>AI Rule Engine Generator</span>
           </button>
           <a routerLink="/builder" class="btn btn-primary">
             <span>+ Create Blank Form</span>
@@ -85,37 +85,7 @@ import { QrModalComponent } from '../../shared/qr-modal/qr-modal.component';
         </div>
       </div>
 
-      <!-- Quick Action Cards Bar -->
-      <div class="quick-actions-bar grid grid-cols-4">
-        <a routerLink="/builder" class="action-tile">
-          <div class="tile-icon">+</div>
-          <div class="tile-text">
-            <strong>Manual Form Builder</strong>
-            <span>Build custom questions with 10+ field types</span>
-          </div>
-        </a>
-        <div (click)="openRuleModal = true" class="action-tile clickable">
-          <div class="tile-icon spark">⚡</div>
-          <div class="tile-text">
-            <strong>Rule-Based AI Generator</strong>
-            <span>Type natural language prompt to generate schema</span>
-          </div>
-        </div>
-        <a routerLink="/templates" class="action-tile">
-          <div class="tile-icon">📚</div>
-          <div class="tile-text">
-            <strong>Template Repository</strong>
-            <span>Choose from 7 reusable corporate templates</span>
-          </div>
-        </a>
-        <div *ngIf="forms.length > 0" (click)="viewAnalytics(forms[0].id!)" class="action-tile clickable">
-          <div class="tile-icon">📊</div>
-          <div class="tile-text">
-            <strong>Analytics & Export</strong>
-            <span>View charts and export CSV, Excel, PDF</span>
-          </div>
-        </div>
-      </div>
+
 
       <!-- Forms Table Section -->
       <div class="card forms-card">
@@ -171,11 +141,11 @@ import { QrModalComponent } from '../../shared/qr-modal/qr-modal.component';
                 </td>
                 <td style="text-align: right;">
                   <div class="action-buttons">
-                    <button (click)="openQrModal(form)" class="btn btn-secondary btn-sm" title="Share QR Code & Link">🔗 Share</button>
-                    <button (click)="editForm(form.id!)" class="btn btn-secondary btn-sm" title="Edit Form Schema">✏️ Edit</button>
-                    <button (click)="viewResponses(form.id!)" class="btn btn-secondary btn-sm" title="View Responses">📥 Responses</button>
-                    <button (click)="viewAnalytics(form.id!)" class="btn btn-secondary btn-sm" title="Analytics">📊 Analytics</button>
-                    <button (click)="cloneForm(form.id!)" class="btn btn-secondary btn-sm" title="Clone Form">📋 Clone</button>
+                    <button (click)="openQrModal(form)" class="btn btn-secondary btn-sm" title="Share QR Code & Link">🔗</button>
+                    <button (click)="editForm(form.id!)" class="btn btn-secondary btn-sm" title="Edit Form Schema">✏️</button>
+                    <button (click)="viewResponses(form.id!)" class="btn btn-secondary btn-sm" title="View Responses">📥</button>
+                    <button (click)="viewAnalytics(form.id!)" class="btn btn-secondary btn-sm" title="Analytics">📊</button>
+                    <button (click)="cloneForm(form.id!)" class="btn btn-secondary btn-sm" title="Clone Form">📋</button>
                     <button (click)="deleteForm(form.id!)" class="btn btn-danger btn-sm" title="Delete Form">🗑️</button>
                   </div>
                 </td>

@@ -22,7 +22,6 @@ import { AuthService } from '../../core/services/auth.service';
 
         <div class="nav-links" *ngIf="authService.isLoggedIn()">
           <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">Dashboard</a>
-          <a routerLink="/builder" routerLinkActive="active" class="nav-item">Form Builder</a>
           <a routerLink="/templates" routerLinkActive="active" class="nav-item">Templates</a>
         </div>
 
