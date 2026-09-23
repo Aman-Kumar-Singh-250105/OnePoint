@@ -35,7 +35,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/**","/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/submissions/public", "/api/submissions/public/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/submissions/public", "/api/submissions/public/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/submissions/resume", "/api/submissions/resume/**").permitAll()
