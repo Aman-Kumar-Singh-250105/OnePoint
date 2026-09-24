@@ -1,0 +1,31 @@
+.analytics-container { max-width: 1250px; margin: 2rem auto; padding: 0 1.5rem; }
+.analytics-header { padding: 1.25rem 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; }
+.subtitle { color: #64748b; font-size: 0.85rem; }
+.metrics-grid { margin-bottom: 2rem; }
+.metric-card { text-align: center; padding: 1.25rem; }
+.metric-label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 0.25rem; }
+.metric-value { font-size: 1.75rem; font-weight: 800; color: #0f172a; }
+.text-success { color: #166534; }
+.text-primary { color: #4f46e5; }
+.text-accent { color: #0284c7; }
+
+.q-analytics-card { padding: 1.25rem; }
+.q-analytics-card h3 { font-size: 0.95rem; color: #0f172a; margin: 0; }
+.q-type-badge { font-size: 0.65rem; font-weight: 700; background: #f1f5f9; color: #475569; padding: 0.2rem 0.5rem; border-radius: 4px; }
+.rating-display { margin-top: 0.75rem; background: #fef08a; padding: 0.5rem; border-radius: 8px; font-size: 0.85rem; color: #854d0e; }
+.stars { color: #eab308; font-size: 1.1rem; margin-right: 0.5rem; }
+.options-distribution { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.dist-label { font-size: 0.8rem; color: #334155; margin-bottom: 0.2rem; }
+.progress-bar-bg { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%); border-radius: 4px; }
+.text-samples { margin-top: 0.75rem; }
+.sample-title { font-size: 0.75rem; font-weight: 700; color: #64748b; display: block; margin-bottom: 0.25rem; }
+.sample-item { font-size: 0.8rem; background: #f8fafc; padding: 0.4rem 0.6rem; border-radius: 6px; margin-bottom: 0.25rem; color: #334155; font-style: italic; }
+
+.custom-table { width: 100%; border-collapse: collapse; text-align: left; }
+.custom-table th { padding: 0.75rem 1rem; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; }
+.custom-table td { padding: 0.85rem 1rem; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+.ans-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; }
+.ans-q { font-size: 0.85rem; color: #0f172a; display: block; margin-bottom: 0.2rem; }
+.ans-val { font-size: 0.85rem; color: #4f46e5; font-weight: 600; }
+.close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b; }

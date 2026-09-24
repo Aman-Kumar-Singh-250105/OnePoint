@@ -1,0 +1,148 @@
+<div class="analytics-container" *ngIf="analytics; else loadingTpl">
+  <!-- Header Bar with Export Buttons -->
+  <div class="analytics-header flex justify-between items-center glass-panel">
+    <div>
+      <button (click)="goBack()" class="btn btn-secondary btn-sm" style="margin-bottom: 0.5rem;">← Back to Dashboard</button>
+      <h1>Form Analytics: {{ analytics.formTitle }}</h1>
+      <p class="subtitle">Real-time metrics, completion rates, and question breakdowns</p>
+    </div>
+
+    <div class="export-group flex gap-2">
+      <button (click)="exportReport('csv')" class="btn btn-secondary btn-sm" title="Export CSV Report">
+        📄 Export CSV
+      </button>
+      <button (click)="exportReport('excel')" class="btn btn-secondary btn-sm" title="Export Excel Report">
+        📊 Export Excel
+      </button>
+      <button (click)="exportReport('pdf')" class="btn btn-primary btn-sm" title="Export PDF Report">
+        📕 Export PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- High Level Metrics Grid -->
+  <div class="grid grid-cols-4 metrics-grid">
+    <div class="card metric-card">
+      <span class="metric-label">Total Submissions</span>
+      <span class="metric-value">{{ analytics.totalSubmissions }}</span>
+    </div>
+    <div class="card metric-card">
+      <span class="metric-label">Daily Submissions (24h)</span>
+      <span class="metric-value text-success">+{{ analytics.dailySubmissions }}</span>
+    </div>
+    <div class="card metric-card">
+      <span class="metric-label">Weekly Submissions</span>
+      <span class="metric-value text-primary">{{ analytics.weeklySubmissions }}</span>
+    </div>
+    <div class="card metric-card">
+      <span class="metric-label">Completion Rate</span>
+      <span class="metric-value text-accent">{{ analytics.completionRate }}%</span>
+    </div>
+  </div>
+
+  <!-- Question Wise Analysis Section -->
+  <div class="analytics-section">
+    <h2>Question-Wise Analysis</h2>
+    <div class="grid grid-cols-2 gap-4" style="margin-top: 1rem;">
+      <div class="q-analytics-card card" *ngFor="let qa of analytics.questionAnalyticsList">
+        <div class="flex justify-between items-center">
+          <h3>{{ qa.questionText }}</h3>
+          <span class="q-type-badge">{{ qa.questionType }}</span>
+        </div>
+
+        <!-- Average Rating -->
+        <div class="rating-display" *ngIf="qa.averageRating && qa.averageRating > 0">
+          <span class="stars">★★★★★</span>
+          <span class="avg-score">Average Score: <strong>{{ qa.averageRating }} / 5.0</strong></span>
+        </div>
+
+        <!-- Option Choice Counts Bar Chart -->
+        <div class="options-distribution" *ngIf="qa.optionCounts">
+          <div class="dist-row" *ngFor="let opt of getOptionEntries(qa.optionCounts)">
+            <div class="dist-label flex justify-between">
+              <span>{{ opt.label }}</span>
+              <strong>{{ opt.count }} responses</strong>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" [style.width.%]="getPercentage(opt.count, analytics.totalSubmissions)"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Text Responses -->
+        <div class="text-samples" *ngIf="qa.textAnswers && qa.textAnswers.length > 0">
+          <span class="sample-title">Recent Sample Responses:</span>
+          <div class="sample-item" *ngFor="let text of qa.textAnswers">
+            "{{ text }}"
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submissions Table -->
+  <div class="card submissions-card" style="margin-top: 2rem;">
+    <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
+      <h2>All Individual Submissions ({{ submissions.length }})</h2>
+    </div>
+
+    <div class="table-responsive" *ngIf="submissions.length > 0; else emptySubs">
+      <table class="custom-table">
+        <thead>
+        <tr>
+          <th>Submission Token</th>
+          <th>Respondent</th>
+          <th>Submitted At</th>
+          <th style="text-align: right;">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let sub of submissions">
+          <td><code>{{ sub.submissionToken }}</code></td>
+          <td>
+            <strong>{{ sub.isAnonymous ? 'Anonymous' : sub.respondentName }}</strong>
+            <span style="font-size: 0.75rem; color: #64748b; display: block;" *ngIf="!sub.isAnonymous">{{ sub.respondentEmail }}</span>
+          </td>
+          <td>{{ sub.submittedAt | date:'medium' }}</td>
+          <td style="text-align: right;">
+            <button (click)="viewDetail(sub)" class="btn btn-secondary btn-sm">Inspect Answers</button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <ng-template #emptySubs>
+      <p style="text-align: center; color: #64748b; padding: 2rem;">No responses submitted yet.</p>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Submission Inspect Modal -->
+<div class="modal-backdrop" *ngIf="selectedSubmission">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Submission Detail: {{ selectedSubmission.submissionToken }}</h3>
+      <button (click)="selectedSubmission = null" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">
+        Submitted by <strong>{{ selectedSubmission.isAnonymous ? 'Anonymous Respondent' : selectedSubmission.respondentName }}</strong> on {{ selectedSubmission.submittedAt | date:'medium' }}
+      </p>
+
+      <div class="ans-item" *ngFor="let ans of selectedSubmission.answers">
+        <strong class="ans-q">{{ ans.questionText }}</strong>
+        <div class="ans-val">{{ ans.answerValue || '(No answer provided)' }}</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button (click)="selectedSubmission = null" class="btn btn-secondary">Close</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div style="text-align: center; padding: 4rem;">
+    <p>Loading analytics data...</p>
+  </div>
+</ng-template>

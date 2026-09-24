@@ -1,0 +1,1011 @@
+<div class="builder-page">
+
+  <!-- =====================================
+       HEADER
+  ====================================== -->
+
+  <header class="builder-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="icon-button back-button"
+        (click)="goBack()">
+
+        <span class="material-symbols-outlined">
+          arrow_back
+        </span>
+
+      </button>
+
+      <div>
+
+        <div class="brand-row">
+          <span class="brand-name">
+            OnePoint
+          </span>
+
+          <span
+            class="status-badge"
+            [class.published]="form.status === 'PUBLISHED'">
+
+            {{ form.status }}
+
+          </span>
+        </div>
+
+        <span class="page-caption">
+          Form builder
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <button
+        type="button"
+        class="button secondary-button"
+        (click)="saveDraft()"
+        [disabled]="saving">
+
+        <span class="material-symbols-outlined">
+          save
+        </span>
+
+        Save draft
+
+      </button>
+
+
+      <button
+        type="button"
+        class="button publish-button"
+        (click)="openPublishModal()"
+        [disabled]="saving">
+
+        <span class="material-symbols-outlined">
+          rocket_launch
+        </span>
+
+        Publish
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================
+       MAIN LAYOUT
+  ====================================== -->
+
+  <main class="builder-layout">
+
+
+    <!-- =================================
+         QUESTION TOOLBOX
+    ================================== -->
+
+    <aside class="toolbox-panel card">
+
+      <div class="panel-heading">
+
+        <div>
+          <h3>Add question</h3>
+
+          <p>
+            Drag a field onto your form or
+            click one to add it.
+          </p>
+        </div>
+
+        <div class="gradient-icon">
+
+          <span class="material-symbols-outlined">
+            add
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="question-toolbox"
+        cdkDropList
+        [cdkDropListData]="toolboxItems"
+        [cdkDropListConnectedTo]="questionListIds"
+        [cdkDropListSortingDisabled]="true"
+        class="toolbox-list">
+
+
+        <button
+          type="button"
+          class="toolbox-item"
+          *ngFor="let item of toolboxItems"
+          cdkDrag
+          [cdkDragData]="item"
+          (click)="addToolboxQuestion(item)">
+
+
+          <div class="toolbox-item-content">
+
+            <span class="material-symbols-outlined">
+              {{ item.icon }}
+            </span>
+
+            <span>
+              {{ item.label }}
+            </span>
+
+          </div>
+
+
+          <span
+            cdkDragHandle
+            class="drag-grip">
+
+            <span class="material-symbols-outlined">
+              drag_indicator
+            </span>
+
+          </span>
+
+
+          <div
+            *cdkDragPreview
+            class="drag-preview">
+
+            <span class="material-symbols-outlined">
+              {{ item.icon }}
+            </span>
+
+            {{ item.label }}
+
+          </div>
+
+        </button>
+
+      </div>
+
+    </aside>
+
+
+
+    <!-- =================================
+         FORM CANVAS
+    ================================== -->
+
+    <section class="canvas-column">
+
+
+      <!-- Form heading -->
+
+      <div class="form-meta card">
+
+        <input
+          class="form-title-input"
+          [(ngModel)]="form.title"
+          placeholder="Untitled form"
+          aria-label="Form title">
+
+
+        <textarea
+          class="form-description-input"
+          [(ngModel)]="form.description"
+          placeholder="Add a short description so respondents know what this form is for"
+          rows="2">
+        </textarea>
+
+      </div>
+
+
+
+      <!-- Sections -->
+
+      <div class="sections-container">
+
+
+        <section
+          class="section-card card"
+          *ngFor="
+            let section of form.sections;
+            let sectionIndex = index
+          ">
+
+
+          <!-- Section header -->
+
+          <div class="section-header">
+
+            <div class="section-title-area">
+
+              <span class="section-index">
+                {{ sectionIndex + 1 }}
+              </span>
+
+
+              <div class="section-title-fields">
+
+                <input
+                  class="section-title-input"
+                  [(ngModel)]="section.sectionTitle"
+                  placeholder="Section title">
+
+
+                <input
+                  class="section-description-input"
+                  [(ngModel)]="section.sectionDescription"
+                  placeholder="Optional section description">
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="section-delete"
+              *ngIf="form.sections.length > 1"
+              (click)="removeSection(sectionIndex)">
+
+              <span class="material-symbols-outlined">
+                delete
+              </span>
+
+            </button>
+
+          </div>
+
+
+
+          <!-- Question dropzone -->
+
+          <div
+            class="question-drop-list"
+            cdkDropList
+            [id]="'section-questions-' + sectionIndex"
+            [cdkDropListData]="section.questions"
+            [cdkDropListConnectedTo]="[
+              'question-toolbox',
+              ...questionListIds
+            ]"
+            (cdkDropListDropped)="
+              dropQuestion($event, section)
+            ">
+
+
+            <!-- Empty section -->
+
+            <div
+              class="empty-drop-zone"
+              *ngIf="section.questions.length === 0">
+
+              <span class="material-symbols-outlined">
+                add_circle
+              </span>
+
+              <strong>
+                Drop a question here
+              </strong>
+
+              <span>
+                or choose one from the toolbox
+              </span>
+
+            </div>
+
+
+
+            <!-- Question -->
+
+            <article
+              class="question-card"
+              *ngFor="
+                let question of section.questions;
+                let questionIndex = index
+              "
+              cdkDrag
+              [cdkDragData]="question"
+              [class.selected]="
+                selectedQuestion === question
+              "
+              (click)="selectQuestion(question)">
+
+
+              <!-- Question heading -->
+
+              <div class="question-heading">
+
+
+                <div class="question-heading-left">
+
+                  <button
+                    type="button"
+                    class="question-drag"
+                    cdkDragHandle
+                    title="Drag question">
+
+                    <span class="material-symbols-outlined">
+                      drag_indicator
+                    </span>
+
+                  </button>
+
+
+                  <span class="question-number">
+                    {{ questionIndex + 1 }}.
+                  </span>
+
+
+                  <input
+                    class="question-title-input"
+                    [(ngModel)]="question.questionText"
+                    placeholder="Enter your question"
+                    (click)="$event.stopPropagation()">
+
+
+                  <span
+                    *ngIf="question.required"
+                    class="required-star">
+                    *
+                  </span>
+
+                </div>
+
+
+
+                <div class="question-actions">
+
+                  <select
+                    class="question-type-select"
+                    [(ngModel)]="question.questionType"
+                    (click)="$event.stopPropagation()">
+
+                    <option value="TEXT">
+                      Short text
+                    </option>
+
+                    <option value="MULTILINE_TEXT">
+                      Long text
+                    </option>
+
+                    <option value="EMAIL">
+                      Email
+                    </option>
+
+                    <option value="NUMBER">
+                      Number
+                    </option>
+
+                    <option value="DATE">
+                      Date
+                    </option>
+
+                    <option value="TIME">
+                      Time
+                    </option>
+
+                    <option value="DROPDOWN">
+                      Dropdown
+                    </option>
+
+                    <option value="RADIO">
+                      Single choice
+                    </option>
+
+                    <option value="CHECKBOX">
+                      Multiple choice
+                    </option>
+
+                    <option value="RATING">
+                      Rating
+                    </option>
+
+                    <option value="FILE_UPLOAD">
+                      File upload
+                    </option>
+
+                  </select>
+
+
+
+                  <button
+                    type="button"
+                    class="question-action-button"
+                    title="Duplicate"
+                    (click)="
+                      $event.stopPropagation();
+                      duplicateQuestion(
+                        section,
+                        questionIndex
+                      )
+                    ">
+
+                    <span class="material-symbols-outlined">
+                      content_copy
+                    </span>
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    class="question-action-button delete"
+                    title="Delete"
+                    (click)="
+                      $event.stopPropagation();
+                      removeQuestion(
+                        section,
+                        questionIndex
+                      )
+                    ">
+
+                    <span class="material-symbols-outlined">
+                      delete
+                    </span>
+
+                  </button>
+
+                </div>
+
+              </div>
+
+
+
+              <!-- =================================
+                   PREVIEW FIELD
+              ================================== -->
+
+              <div class="answer-preview">
+
+
+                <input
+                  *ngIf="
+                    question.questionType === 'TEXT'
+                  "
+                  disabled
+                  placeholder="Enter your answer">
+
+
+                <textarea
+                  *ngIf="
+                    question.questionType ===
+                    'MULTILINE_TEXT'
+                  "
+                  disabled
+                  placeholder="Enter your answer">
+                </textarea>
+
+
+                <input
+                  *ngIf="
+                    question.questionType === 'EMAIL'
+                  "
+                  disabled
+                  placeholder="name@example.com">
+
+
+                <input
+                  *ngIf="
+                    question.questionType === 'NUMBER'
+                  "
+                  type="number"
+                  disabled
+                  placeholder="0">
+
+
+                <input
+                  *ngIf="
+                    question.questionType === 'DATE'
+                  "
+                  type="date"
+                  disabled>
+
+
+                <input
+                  *ngIf="
+                    question.questionType === 'TIME'
+                  "
+                  type="time"
+                  disabled>
+
+
+                <div
+                  class="upload-preview"
+                  *ngIf="
+                    question.questionType ===
+                    'FILE_UPLOAD'
+                  ">
+
+                  <span class="material-symbols-outlined">
+                    upload_file
+                  </span>
+
+                  Choose file
+
+                </div>
+
+
+                <div
+                  class="rating-preview"
+                  *ngIf="
+                    question.questionType === 'RATING'
+                  ">
+
+                  <span
+                    *ngFor="let star of [1,2,3,4,5]"
+                    class="material-symbols-outlined">
+
+                    star
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+
+              <!-- =================================
+                   OPTIONS EDITOR
+              ================================== -->
+
+              <div
+                class="options-editor"
+                *ngIf="isChoiceQuestion(question)"
+                (click)="$event.stopPropagation()">
+
+
+                <div
+                  class="option-row"
+                  *ngFor="
+                    let option of question.options;
+                    let optionIndex = index
+                  ">
+
+                  <span
+                    class="option-marker material-symbols-outlined">
+
+                    {{
+                      question.questionType ===
+                      'CHECKBOX'
+                        ? 'check_box_outline_blank'
+                        : 'radio_button_unchecked'
+                    }}
+
+                  </span>
+
+
+                  <input
+                    [(ngModel)]="option.optionLabel"
+                    (ngModelChange)="
+                      option.optionValue =
+                        option.optionLabel
+                    "
+                    placeholder="Option">
+
+
+                  <button
+                    type="button"
+                    (click)="
+                      removeOption(
+                        question,
+                        optionIndex
+                      )
+                    ">
+
+                    <span class="material-symbols-outlined">
+                      close
+                    </span>
+
+                  </button>
+
+                </div>
+
+
+                <button
+                  type="button"
+                  class="add-option"
+                  (click)="addOption(question)">
+
+                  + Add option
+
+                </button>
+
+              </div>
+
+
+
+              <!-- =================================
+                   QUESTION FOOTER
+              ================================== -->
+
+              <div class="question-footer">
+
+
+                <label class="required-control">
+
+                  <span>
+                    Required
+                  </span>
+
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="question.required">
+
+                  <span class="toggle"></span>
+
+                </label>
+
+              </div>
+
+
+
+              <!-- Drag placeholder -->
+
+              <div
+                *cdkDragPlaceholder
+                class="question-placeholder">
+              </div>
+
+            </article>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="add-question-button"
+            (click)="addQuestion(section)">
+
+            <span class="material-symbols-outlined">
+              add
+            </span>
+
+            Add question
+
+          </button>
+
+        </section>
+
+      </div>
+
+
+
+      <!-- Add section -->
+
+      <button
+        type="button"
+        class="add-section-button"
+        (click)="addSection()">
+
+        <span class="material-symbols-outlined">
+          add
+        </span>
+
+        Add another section
+
+      </button>
+
+    </section>
+
+
+
+    <!-- =================================
+         RIGHT PANEL
+    ================================== -->
+
+    <aside class="settings-panel card">
+
+      <div class="settings-heading">
+
+        <span class="material-symbols-outlined">
+          tune
+        </span>
+
+        <div>
+          <h3>Form settings</h3>
+
+          <p>
+            Overview and response settings
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="settings-summary">
+
+        <div class="summary-row">
+
+          <span>Sections</span>
+
+          <strong>
+            {{ form.sections.length }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>Status</span>
+
+          <strong>
+            {{ form.status }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="setting-group">
+
+        <label>
+          Response limit
+        </label>
+
+        <input
+          type="number"
+          [(ngModel)]="form.responseLimit"
+          placeholder="Unlimited">
+
+      </div>
+
+
+      <label class="setting-switch">
+
+        <div>
+
+          <strong>
+            Anonymous responses
+          </strong>
+
+          <span>
+            Responders don't need to identify
+            themselves.
+          </span>
+
+        </div>
+
+
+        <input
+          type="checkbox"
+          [(ngModel)]="form.allowAnonymous">
+
+
+        <span class="toggle"></span>
+
+      </label>
+
+
+      <div class="panel-divider"></div>
+
+
+      <button
+        type="button"
+        class="publish-panel-button"
+        (click)="openPublishModal()">
+
+        <span class="material-symbols-outlined">
+          rocket_launch
+        </span>
+
+        Publish form
+
+      </button>
+
+    </aside>
+
+  </main>
+
+</div>
+
+
+
+<!-- =====================================
+     PUBLISH MODAL
+====================================== -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="publishModalOpen"
+  (click)="closePublishModal()">
+
+
+  <div
+    class="publish-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="publishTitle"
+    (click)="$event.stopPropagation()">
+
+
+    <div class="modal-heading">
+
+
+      <div>
+
+        <div class="modal-icon">
+
+          <span class="material-symbols-outlined">
+            rocket_launch
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <h2 id="publishTitle">
+            Publish your form
+          </h2>
+
+          <p>
+            Choose how people can access and
+            respond to this form.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="closePublishModal()">
+
+        <span class="material-symbols-outlined">
+          close
+        </span>
+
+      </button>
+
+    </div>
+
+
+
+    <div class="modal-body">
+
+
+      <div class="modal-field">
+
+        <label>
+          Distribution type
+        </label>
+
+        <select
+          [(ngModel)]="form.distributionType">
+
+          <option value="PUBLIC_LINK">
+            Public link
+          </option>
+
+          <option value="INTERNAL_EMPLOYEE">
+            Internal employees only
+          </option>
+
+          <option value="QR_CODE">
+            QR code
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <div class="date-grid">
+
+
+        <div class="modal-field">
+
+          <label>
+            Opens
+          </label>
+
+          <input
+            type="datetime-local"
+            [(ngModel)]="form.startDate">
+
+        </div>
+
+
+        <div class="modal-field">
+
+          <label>
+            Closes
+          </label>
+
+          <input
+            type="datetime-local"
+            [(ngModel)]="form.expiryDate">
+
+        </div>
+
+      </div>
+
+
+
+      <label class="modal-toggle">
+
+        <div>
+          <strong>
+            Allow anonymous responses
+          </strong>
+
+          <span>
+            Respondents can submit without
+            signing in.
+          </span>
+        </div>
+
+
+        <input
+          type="checkbox"
+          [(ngModel)]="form.allowAnonymous">
+
+
+        <span class="toggle"></span>
+
+      </label>
+
+
+      <div class="publish-note">
+
+        <span class="material-symbols-outlined">
+          info
+        </span>
+
+        Publishing makes this form available
+        according to the access settings above.
+
+      </div>
+
+    </div>
+
+
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="button secondary-button"
+        (click)="closePublishModal()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        type="button"
+        class="button publish-button"
+        [disabled]="saving"
+        (click)="publishForm()">
+
+        <span
+          *ngIf="!saving"
+          class="material-symbols-outlined">
+
+          rocket_launch
+
+        </span>
+
+        {{ saving ? 'Publishing...' : 'Publish form' }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
